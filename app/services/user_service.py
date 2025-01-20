@@ -12,6 +12,7 @@ class User:
 class UserManager:
     def __init__(self):
         self.users = {}
+        self.user_purchases = {}
         self.user_count = 1
         self.purchase_count = 1
 
@@ -33,6 +34,7 @@ class UserManager:
             installment_months=total_months,
             type= 'EMI'
         )
+        user.purchases[purchase.id] = purchase
         return purchase
     
     def make_purchase_via_fixed_installemnt(self, user_id, amount, fixed_amount_per_month, installment_months):

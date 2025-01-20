@@ -47,15 +47,20 @@ def make_purchase(purchase: Purchase):
     elif purchase.type == "FIXED":
         fixed_amount = calculate_fixed(purchase.amount, purchase.installment_months)
         response = user_manager.make_purchase_via_fixed_installemnt(user_id, purchase.amount, fixed_amount, purchase.installment_months)
-        print(response)
         purchase_db[response.id] = response
         return response
     
 @app.post("/pay/")
 def pay_amount(pid:int,user_id:int, amount:float):
-    print(purchase_db)
     if pid not in purchase_db:
         raise HTTPException(status_code=404, detail="PID not found.")
     payment = purchase_db.get(pid)
     response = user_manager.make_payment(user_id,amount)
     return JSONResponse(f"EMI received against purchase ID: {pid}")
+
+@app.get("/user/puchases/")
+def get_user_purchases(user_id:int):
+    if not user_id in user_db:
+        raise HTTPException(status_code=404, detail="User not found.") 
+    user = user_db.get(user_id)
+    return user.purchases
